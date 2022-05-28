@@ -23,5 +23,8 @@
   "homepage": "https://github.com/AsaiToshiya/octo-image#readme",
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "dependencies": {
+    "puppeteer-core": "^14.1.1"
   }
 }
