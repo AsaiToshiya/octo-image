@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import puppeteer from "puppeteer-core";
 
+const INVOLVES_USAGE = "octo-image involves [--absolute-time] <user>";
+
 const involves = async (user, absoluteTime) => {
   const browser = await puppeteer.launch({ channel: "chrome" });
   const page = await browser.newPage();
@@ -45,8 +47,8 @@ if (command == "involves") {
       await involves(value, args.includes("--absolute-time"));
     })();
   } else {
-    console.log("octo-image involves [--absolute-time] <user>");
+    console.log(INVOLVES_USAGE);
   }
 } else {
-  console.log("octo-image involves [--absolute-time] <user>");
+  console.log(INVOLVES_USAGE);
 }
