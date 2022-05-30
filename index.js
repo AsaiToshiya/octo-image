@@ -37,14 +37,18 @@ const involves = async (user, absoluteTime) => {
 
 const args = process.argv.slice(2);
 const command = args.shift();
-const value = args.pop();
 
-if (command == "involves" && value) {
+if (command == "involves") {
+  const value = args.pop();
+  if (value) {
+    (async () => {
+      await involves(value, args.includes("--absolute-time"));
+    })();
+  } else {
+    console.log("octo-image involves [--absolute-time] <user>");
+    process.exit();
+  }
 } else {
   console.log("octo-image involves [--absolute-time] <user>");
   process.exit();
 }
-
-(async () => {
-  await involves(value, args.includes("--absolute-time"));
-})();
