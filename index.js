@@ -46,9 +46,7 @@ if (command == "involves") {
     })();
   } else {
     console.log("octo-image involves [--absolute-time] <user>");
-    process.exit();
   }
 } else {
   console.log("octo-image involves [--absolute-time] <user>");
-  process.exit();
 }
