@@ -39,7 +39,8 @@ const args = process.argv.slice(2);
 const command = args.shift();
 const value = args.pop();
 
-if (command != "involves" || !value) {
+if (command == "involves" && value) {
+} else {
   console.log("octo-image involves [--absolute-time] <user>");
   process.exit();
 }
