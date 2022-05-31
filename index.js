@@ -1,7 +1,12 @@
 #!/usr/bin/env node
+import fs from "fs";
+import https from "https";
+
+import { JSDOM } from "jsdom";
 import puppeteer from "puppeteer-core";
 
 const INVOLVES_USAGE = "octo-image involves [--absolute-time] <user>";
+const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
 const involves = async (user, absoluteTime) => {
   const browser = await puppeteer.launch({ channel: "chrome" });
@@ -37,6 +42,15 @@ const involves = async (user, absoluteTime) => {
   await browser.close();
 };
 
+const openGraph = async (user, repo) => {
+  const dom = await JSDOM.fromURL(`https://github.com/${user}/${repo}`);
+  const node = dom.window.document.querySelector('meta[property="og:image"]');
+  const url = node.getAttribute("content");
+  https.get(url, (res) => {
+      res.pipe(fs.createWriteStream("open-graph.png"));
+  });
+};
+
 const args = process.argv.slice(2);
 const command = args.shift();
 
@@ -49,6 +63,16 @@ if (command == "involves") {
   } else {
     console.log(INVOLVES_USAGE);
   }
+} else if (command == "open-graph") {
+  const [user, repo] = args;
+  if (user && repo) {
+    (async () => {
+      await openGraph(user, repo);
+    })();
+  } else {
+    console.log(OPEN_GRAPH_USAGE);
+  }
 } else {
   console.log(INVOLVES_USAGE);
+  console.log(OPEN_GRAPH_USAGE);
 }
