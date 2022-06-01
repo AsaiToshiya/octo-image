@@ -3,13 +3,13 @@ import fs from "fs";
 import https from "https";
 
 import { JSDOM } from "jsdom";
-import puppeteer from "puppeteer-core";
+import { chromium } from "playwright-core";
 
 const INVOLVES_USAGE = "octo-image involves [--absolute-time] <user>";
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
 const involves = async (user, absoluteTime) => {
-  const browser = await puppeteer.launch({ channel: "chrome" });
+  const browser = await chromium.launch({ channel: "chrome" });
   const page = await browser.newPage();
   await page.goto(`https://github.com/search?q=involves:${user}`);
   await page.waitForSelector("#issue_search_results");
@@ -26,10 +26,9 @@ const involves = async (user, absoluteTime) => {
       const month = date.toLocaleString("en-us", { month: "short" });
       const year = date.getFullYear();
       await relativeTime.evaluate(
-        (el, day, month, year) => (el.innerText = `on ${day} ${month} ${year}`),
-        day,
-        month,
-        year
+        (el, date) =>
+          (el.innerText = `on ${date.day} ${date.month} ${date.year}`),
+        { day, month, year }
       );
     }
   }
