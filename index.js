@@ -5,8 +5,20 @@ import https from "https";
 import { JSDOM } from "jsdom";
 import { chromium } from "playwright-core";
 
+const CONTRIBUTION_GRAPH_USAGE = "octo-image contribution-graph <user>";
 const INVOLVES_USAGE = "octo-image involves [--absolute-time] <user>";
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
+
+const contributionGraph = async (user) => {
+  const browser = await chromium.launch({ channel: "chrome" });
+  const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
+  const page = await context.newPage();
+  await page.goto(`https://github.com/${user}`);
+  await page.waitForSelector(".js-calendar-graph-svg");
+  const element = await page.$(".js-calendar-graph-svg");
+  await element.screenshot({ path: "contribution-graph.png" });
+  await browser.close();
+};
 
 const involves = async (user, absoluteTime) => {
   const browser = await chromium.launch({ channel: "chrome" });
@@ -54,7 +66,16 @@ const openGraph = async (user, repo) => {
 const args = process.argv.slice(2);
 const command = args.shift();
 
-if (command == "involves") {
+if (command == "contribution-graph") {
+  const [user] = args;
+  if (user) {
+    (async () => {
+      await contributionGraph(user);
+    })();
+  } else {
+    console.log(CONTRIBUTION_GRAPH_USAGE);
+  }
+} else if (command == "involves") {
   const value = args.pop();
   if (value) {
     (async () => {
@@ -73,6 +94,7 @@ if (command == "involves") {
     console.log(OPEN_GRAPH_USAGE);
   }
 } else {
+  console.log(CONTRIBUTION_GRAPH_USAGE);
   console.log(INVOLVES_USAGE);
   console.log(OPEN_GRAPH_USAGE);
 }
