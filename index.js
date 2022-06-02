@@ -10,7 +10,8 @@ const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
 const involves = async (user, absoluteTime) => {
   const browser = await chromium.launch({ channel: "chrome" });
-  const page = await browser.newPage();
+  const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
+  const page = await context.newPage();
   await page.goto(`https://github.com/search?q=involves:${user}`);
   await page.waitForSelector("#issue_search_results");
   const targetElement = await page.$("#issue_search_results");
