@@ -46,9 +46,9 @@ const involves = async (user, absoluteTime) => {
     }
   }
 
-  const childToHide = await targetElement.$(".paginate-container");
-  if (childToHide) {
-    await childToHide.evaluate((el) => (el.style.display = "none"));
+  const elementToHide = await targetElement.$(".paginate-container");
+  if (elementToHide) {
+    await elementToHide.evaluate((el) => (el.style.display = "none"));
   }
   await targetElement.screenshot({ path: "involves.png" });
   await browser.close();
@@ -76,10 +76,10 @@ if (command == "contribution-graph") {
     console.log(CONTRIBUTION_GRAPH_USAGE);
   }
 } else if (command == "involves") {
-  const value = args.pop();
-  if (value) {
+  const user = args.pop();
+  if (user) {
     (async () => {
-      await involves(value, args.includes("--absolute-time"));
+      await involves(user, args.includes("--absolute-time"));
     })();
   } else {
     console.log(INVOLVES_USAGE);
