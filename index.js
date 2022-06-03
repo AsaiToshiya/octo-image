@@ -59,7 +59,7 @@ const openGraph = async (user, repo) => {
   const node = dom.window.document.querySelector('meta[property="og:image"]');
   const url = node.getAttribute("content");
   https.get(url, (res) => {
-      res.pipe(fs.createWriteStream("open-graph.png"));
+    res.pipe(fs.createWriteStream("open-graph.png"));
   });
 };
 
