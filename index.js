@@ -77,9 +77,10 @@ if (command == "contribution-graph") {
   }
 } else if (command == "involves") {
   const user = args.pop();
+  const absoluteTime = args.includes("--absolute-time");
   if (user) {
     (async () => {
-      await involves(user, args.includes("--absolute-time"));
+      await involves(user, absoluteTime);
     })();
   } else {
     console.log(INVOLVES_USAGE);
