@@ -11,47 +11,53 @@ const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
 const contributionGraph = async (user) => {
   const browser = await chromium.launch({ channel: "chrome" });
-  const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
-  const page = await context.newPage();
-  await page.goto(`https://github.com/${user}`);
-  await page.waitForSelector(".js-calendar-graph-svg");
-  const element = await page.$(".js-calendar-graph-svg");
-  await element.screenshot({ path: "contribution-graph.png" });
-  await browser.close();
+  try {
+    const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
+    const page = await context.newPage();
+    await page.goto(`https://github.com/${user}`);
+    await page.waitForSelector(".js-calendar-graph-svg");
+    const element = await page.$(".js-calendar-graph-svg");
+    await element.screenshot({ path: "contribution-graph.png" });
+  } finally {
+    await browser.close();
+  }
 };
 
 const involves = async (user, absoluteTime) => {
   const browser = await chromium.launch({ channel: "chrome" });
-  const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
-  const page = await context.newPage();
-  await page.goto(`https://github.com/search?q=involves:${user}`);
-  await page.waitForSelector("#issue_search_results");
-  const targetElement = await page.$("#issue_search_results");
+  try {
+    const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
+    const page = await context.newPage();
+    await page.goto(`https://github.com/search?q=involves:${user}`);
+    await page.waitForSelector("#issue_search_results");
+    const targetElement = await page.$("#issue_search_results");
 
-  if (absoluteTime) {
-    const relativeTimes = await targetElement.$$("relative-time");
-    for (const relativeTime of relativeTimes) {
-      const dateTime = await relativeTime.evaluate((el) =>
-        el.getAttribute("datetime")
-      );
-      const date = new Date(dateTime);
-      const day = date.getDate();
-      const month = date.toLocaleString("en-us", { month: "short" });
-      const year = date.getFullYear();
-      await relativeTime.evaluate(
-        (el, date) =>
-          (el.innerText = `on ${date.day} ${date.month} ${date.year}`),
-        { day, month, year }
-      );
+    if (absoluteTime) {
+      const relativeTimes = await targetElement.$$("relative-time");
+      for (const relativeTime of relativeTimes) {
+        const dateTime = await relativeTime.evaluate((el) =>
+          el.getAttribute("datetime")
+        );
+        const date = new Date(dateTime);
+        const day = date.getDate();
+        const month = date.toLocaleString("en-us", { month: "short" });
+        const year = date.getFullYear();
+        await relativeTime.evaluate(
+          (el, date) =>
+            (el.innerText = `on ${date.day} ${date.month} ${date.year}`),
+          { day, month, year }
+        );
+      }
     }
-  }
 
-  const elementToHide = await targetElement.$(".paginate-container");
-  if (elementToHide) {
-    await elementToHide.evaluate((el) => (el.style.display = "none"));
+    const elementToHide = await targetElement.$(".paginate-container");
+    if (elementToHide) {
+      await elementToHide.evaluate((el) => (el.style.display = "none"));
+    }
+    await targetElement.screenshot({ path: "involves.png" });
+  } finally {
+    await browser.close();
   }
-  await targetElement.screenshot({ path: "involves.png" });
-  await browser.close();
 };
 
 const openGraph = async (user, repo) => {
