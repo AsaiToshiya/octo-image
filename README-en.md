@@ -1,22 +1,22 @@
-日本語 | [English](./README-en.md)
+[日本語](./README.md) | English
   
 # octo-image
 
-octo-image は、GitHub の様々な画像を取得するコマンド ライン ツールです。
+octo-image is a command line tool to get various images on GitHub.
 
-動作には Google Chrome が必要です。
+Google Chrome is required to work.
 
 
-## インストール
+## Install
 
 ```bash
 npm i -g octo-image
 ```
 
 
-## 使い方
+## Usage
 
-### コントリビューション グラフ
+### Contribution Graph
 
 ```bash
 octo-image contribution-graph <user>
@@ -24,7 +24,7 @@ octo-image contribution-graph <user>
 
 ![contribution-graph.png](contribution-graph.png)
 
-### インボルブ
+### Involves
 
 ```bash
 octo-image involves [--absolute-time] <user>
@@ -32,7 +32,7 @@ octo-image involves [--absolute-time] <user>
 
 [involves.png](involves.png)
 
-### オープン グラフ
+### Open Graph
 
 ```bash
 octo-image open-graph <user> <repo>
@@ -41,7 +41,7 @@ octo-image open-graph <user> <repo>
 ![open-graph.png](open-graph.png)
 
 
-## ライセンス
+## License
 
     MIT License
     
