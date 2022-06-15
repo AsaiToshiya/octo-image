@@ -14,6 +14,7 @@ const contributionGraph = async (user) => {
   try {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
     const page = await context.newPage();
+    page.setDefaultTimeout(0);
     await page.goto(`https://github.com/${user}`);
     await page.waitForSelector(".js-calendar-graph-svg");
     const element = await page.$(".js-calendar-graph-svg");
@@ -28,6 +29,7 @@ const involves = async (user, absoluteTime) => {
   try {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
     const page = await context.newPage();
+    page.setDefaultTimeout(0);
     await page.goto(`https://github.com/search?q=involves:${user}`);
     await page.waitForSelector("#issue_search_results");
     const targetElement = await page.$("#issue_search_results");
