@@ -1,6 +1,6 @@
 {
   "name": "octo-image",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "GitHub の様々な画像を取得するコマンド ライン ツールです",
   "exports": "./index.js",
