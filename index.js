@@ -6,7 +6,8 @@ import { JSDOM } from "jsdom";
 import { chromium } from "playwright-core";
 
 const CONTRIBUTION_GRAPH_USAGE = "octo-image contribution-graph <user>";
-const INVOLVES_USAGE = "octo-image involves [--absolute-time] <user>";
+const INVOLVES_USAGE =
+  "octo-image involves [--absolute-time] [--exclude-user <user>] <user>";
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
 const contributionGraph = async (user) => {
@@ -24,13 +25,16 @@ const contributionGraph = async (user) => {
   }
 };
 
-const involves = async (user, absoluteTime) => {
+const involves = async (user, absoluteTime, excludeUser) => {
   const browser = await chromium.launch({ channel: "chrome" });
   try {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
     const page = await context.newPage();
     page.setDefaultTimeout(0);
-    await page.goto(`https://github.com/search?q=involves:${user}`);
+    await page.goto(
+      `https://github.com/search?q=involves:${user}` +
+        (excludeUser ? `+-user:${excludeUser}` : "")
+    );
     await page.waitForSelector("#issue_search_results");
     const targetElement = await page.$("#issue_search_results");
 
@@ -86,9 +90,15 @@ if (command == "contribution-graph") {
 } else if (command == "involves") {
   const user = args.pop();
   const absoluteTime = args.includes("--absolute-time");
-  if (user) {
+  const excludeUserIndex = args.indexOf("--exclude-user");
+  const hasExcludeUser = excludeUserIndex > -1;
+  const excludeUser = hasExcludeUser ? args[excludeUserIndex + 1] : null;
+  if (
+    user &&
+    (!hasExcludeUser || (excludeUser && excludeUser != "--absolute-time"))
+  ) {
     (async () => {
-      await involves(user, absoluteTime);
+      await involves(user, absoluteTime, excludeUser);
     })();
   } else {
     console.log(INVOLVES_USAGE);

@@ -27,7 +27,7 @@ octo-image contribution-graph <user>
 ### インボルブ
 
 ```bash
-octo-image involves [--absolute-time] <user>
+octo-image involves [--absolute-time] [--exclude-user <user>] <user>
 ```
 
 [involves.png](involves.png)
