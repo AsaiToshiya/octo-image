@@ -10,7 +10,7 @@ const INVOLVES_USAGE =
   "octo-image involves [--absolute-time] [--exclude-user <user>] <user>";
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
-const contributionGraph = async (user) => {
+export const contributionGraph = async (user) => {
   const browser = await chromium.launch({ channel: "chrome" });
   try {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
@@ -25,7 +25,7 @@ const contributionGraph = async (user) => {
   }
 };
 
-const involves = async (user, absoluteTime, excludeUser) => {
+export const involves = async (user, absoluteTime, excludeUser) => {
   const browser = await chromium.launch({ channel: "chrome" });
   try {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
@@ -66,7 +66,7 @@ const involves = async (user, absoluteTime, excludeUser) => {
   }
 };
 
-const openGraph = async (user, repo) => {
+export const openGraph = async (user, repo) => {
   const dom = await JSDOM.fromURL(`https://github.com/${user}/${repo}`);
   const node = dom.window.document.querySelector('meta[property="og:image"]');
   const url = node.getAttribute("content");
