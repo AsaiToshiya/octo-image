@@ -7,7 +7,7 @@ import { chromium } from "playwright-core";
 
 const CONTRIBUTION_GRAPH_USAGE = "octo-image contribution-graph <user>";
 const INVOLVES_USAGE =
-  "octo-image involves [--absolute-time] [--exclude-user <user>] <user>";
+  "octo-image involves [--absolute-time] [--exclude-user <user>] [--sort <criteria>] <user>";
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
 export const contributionGraph = async (user) => {
@@ -25,7 +25,7 @@ export const contributionGraph = async (user) => {
   }
 };
 
-export const involves = async (user, absoluteTime, excludeUser) => {
+export const involves = async (user, absoluteTime, excludeUser, sort) => {
   const browser = await chromium.launch({ channel: "chrome" });
   try {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
@@ -33,7 +33,8 @@ export const involves = async (user, absoluteTime, excludeUser) => {
     page.setDefaultTimeout(0);
     await page.goto(
       `https://github.com/search?q=involves:${user}` +
-        (excludeUser ? `+-user:${excludeUser}` : "")
+        (excludeUser ? `+-user:${excludeUser}` : "") +
+        (sort ? `+sort:${sort}` : "")
     );
     await page.waitForSelector("#issue_search_results");
     const targetElement = await page.$("#issue_search_results");
@@ -93,12 +94,20 @@ if (command == "contribution-graph") {
   const excludeUserIndex = args.indexOf("--exclude-user");
   const hasExcludeUser = excludeUserIndex > -1;
   const excludeUser = hasExcludeUser ? args[excludeUserIndex + 1] : null;
+  const sortIndex = args.indexOf("--sort");
+  const hasSort = sortIndex > -1;
+  const sort = hasSort ? args[sortIndex + 1] : null;
   if (
     user &&
-    (!hasExcludeUser || (excludeUser && excludeUser != "--absolute-time"))
+    (!hasExcludeUser ||
+      (excludeUser &&
+        excludeUser != "--absolute-time" &&
+        excludeUser != "--sort")) &&
+    (!hasSort ||
+      (sort && sort != "--absolute-time" && sort != "--exclude-user"))
   ) {
     (async () => {
-      await involves(user, absoluteTime, excludeUser);
+      await involves(user, absoluteTime, excludeUser, sort);
     })();
   } else {
     console.log(INVOLVES_USAGE);
