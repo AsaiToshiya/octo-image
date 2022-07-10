@@ -76,6 +76,18 @@ export const openGraph = async (user, repo) => {
   });
 };
 
+const _parseInvolvesArgs = (args) => {
+  const user = args.pop();
+  const absoluteTime = args.includes("--absolute-time");
+  const excludeUserIndex = args.indexOf("--exclude-user");
+  const hasExcludeUser = excludeUserIndex > -1;
+  const excludeUser = hasExcludeUser ? args[excludeUserIndex + 1] : null;
+  const sortIndex = args.indexOf("--sort");
+  const hasSort = sortIndex > -1;
+  const sort = hasSort ? args[sortIndex + 1] : null;
+  return { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime };
+};
+
 const args = process.argv.slice(2);
 const command = args.shift();
 
@@ -89,14 +101,8 @@ if (command == "contribution-graph") {
     console.log(CONTRIBUTION_GRAPH_USAGE);
   }
 } else if (command == "involves") {
-  const user = args.pop();
-  const absoluteTime = args.includes("--absolute-time");
-  const excludeUserIndex = args.indexOf("--exclude-user");
-  const hasExcludeUser = excludeUserIndex > -1;
-  const excludeUser = hasExcludeUser ? args[excludeUserIndex + 1] : null;
-  const sortIndex = args.indexOf("--sort");
-  const hasSort = sortIndex > -1;
-  const sort = hasSort ? args[sortIndex + 1] : null;
+  const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
+    _parseInvolvesArgs(args);
   if (
     user &&
     (!hasExcludeUser ||
