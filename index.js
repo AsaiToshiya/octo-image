@@ -10,6 +10,10 @@ const INVOLVES_USAGE =
   "octo-image involves [--absolute-time] [--exclude-user <user>] [--sort <criteria>] <user>";
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
+/**
+ *
+ * @param {string} user - ユーザー
+ */
 export const contributionGraph = async (user) => {
   const browser = await chromium.launch({ channel: "chrome" });
   try {
@@ -25,6 +29,13 @@ export const contributionGraph = async (user) => {
   }
 };
 
+/**
+ *
+ * @param {string} user - ユーザー
+ * @param {boolean} absoluteTime - true の場合は絶対時刻。それ以外の場合は相対時刻
+ * @param {string} excludeUser - 除外するユーザー
+ * @param {string} sort - ソート修飾子。https://docs.github.com/ja/search-github/getting-started-with-searching-on-github/sorting-search-results を参照
+ */
 export const involves = async (user, absoluteTime, excludeUser, sort) => {
   const browser = await chromium.launch({ channel: "chrome" });
   try {
@@ -67,6 +78,11 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
   }
 };
 
+/**
+ *
+ * @param {string} user - ユーザー
+ * @param {string} repo - リポジトリ
+ */
 export const openGraph = async (user, repo) => {
   const dom = await JSDOM.fromURL(`https://github.com/${user}/${repo}`);
   const node = dom.window.document.querySelector('meta[property="og:image"]');
