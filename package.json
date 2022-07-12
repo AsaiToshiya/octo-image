@@ -8,7 +8,8 @@
     "octo-image": "./index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "documentation readme index.js --section=API --markdown-toc false && documentation readme index.js --section=API --markdown-toc false --readme-file README-en.md"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,8 @@
   "dependencies": {
     "jsdom": "^19.0.0",
     "playwright-core": "^1.22.2"
+  },
+  "devDependencies": {
+    "documentation": "^13.2.5"
   }
 }
