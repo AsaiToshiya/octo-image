@@ -44,11 +44,19 @@ octo-image open-graph <user> <repo>
 
 ### contributionGraph
 
+<pre><code class="javascript">
+import { contributionGraph } from "octo-image";
+</code></pre>
+
 #### Parameters
 
 *   `user` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** ユーザー
 
 ### involves
+
+<pre><code class="javascript">
+import { involves } from "octo-image";
+</code></pre>
 
 #### Parameters
 
@@ -58,6 +66,10 @@ octo-image open-graph <user> <repo>
 *   `sort` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** ソート修飾子。<https://docs.github.com/ja/search-github/getting-started-with-searching-on-github/sorting-search-results> を参照
 
 ### openGraph
+
+<pre><code class="javascript">
+import { openGraph } from "octo-image";
+</code></pre>
 
 #### Parameters
 
