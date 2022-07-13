@@ -11,8 +11,7 @@ const INVOLVES_USAGE =
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
 
 /**
- * <pre><code class="javascript">
- * import { contributionGraph } from "octo-image";
+ * <pre><code class="javascript">import { contributionGraph } from "octo-image";
  * </code></pre>
  * @param {string} user - ユーザー
  */
@@ -32,8 +31,7 @@ export const contributionGraph = async (user) => {
 };
 
 /**
- * <pre><code class="javascript">
- * import { involves } from "octo-image";
+ * <pre><code class="javascript">import { involves } from "octo-image";
  * </code></pre>
  * @param {string} user - ユーザー
  * @param {boolean} absoluteTime - true の場合は絶対時刻。それ以外の場合は相対時刻
@@ -83,8 +81,7 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
 };
 
 /**
- * <pre><code class="javascript">
- * import { openGraph } from "octo-image";
+ * <pre><code class="javascript">import { openGraph } from "octo-image";
  * </code></pre>
  * @param {string} user - ユーザー
  * @param {string} repo - リポジトリ
