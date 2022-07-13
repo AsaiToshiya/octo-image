@@ -44,8 +44,7 @@ octo-image open-graph <user> <repo>
 
 ### contributionGraph
 
-<pre><code class="javascript">
-import { contributionGraph } from "octo-image";
+<pre><code class="javascript">import { contributionGraph } from "octo-image";
 </code></pre>
 
 #### Parameters
@@ -54,8 +53,7 @@ import { contributionGraph } from "octo-image";
 
 ### involves
 
-<pre><code class="javascript">
-import { involves } from "octo-image";
+<pre><code class="javascript">import { involves } from "octo-image";
 </code></pre>
 
 #### Parameters
@@ -67,8 +65,7 @@ import { involves } from "octo-image";
 
 ### openGraph
 
-<pre><code class="javascript">
-import { openGraph } from "octo-image";
+<pre><code class="javascript">import { openGraph } from "octo-image";
 </code></pre>
 
 #### Parameters
