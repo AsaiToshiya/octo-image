@@ -30,6 +30,6 @@
     "playwright-core": "^1.22.2"
   },
   "devDependencies": {
-    "documentation": "^13.2.5"
+    "documentation": "^14.0.1"
   }
 }
