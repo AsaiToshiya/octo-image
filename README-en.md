@@ -73,6 +73,25 @@ octo-image open-graph <user> <repo>
 *   `user` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** ユーザー
 *   `repo` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** リポジトリ
 
+## Development
+
+### Repository
+
+```bash
+git clone https://github.com/AsaiToshiya/octo-image.git
+cd octo-image
+npm install
+```
+
+### Release
+
+```bash
+npm version minor
+git push origin main
+git push origin --tags
+npm publish
+```
+
 ## License
 
     MIT License
