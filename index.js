@@ -5,10 +5,25 @@ import https from "https";
 import { JSDOM } from "jsdom";
 import { chromium } from "playwright-core";
 
+const AVATAR_USAGE = "octo-image avatar <user>";
 const CONTRIBUTION_GRAPH_USAGE = "octo-image contribution-graph <user>";
 const INVOLVES_USAGE =
   "octo-image involves [--absolute-time] [--exclude-user <user>] [--sort <criteria>] <user>";
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
+
+/**
+ * <pre><code class="javascript">import { avatar } from "octo-image";
+ * </code></pre>
+ * @param {string} user - ユーザー
+ */
+export const avatar = async (user) => {
+  const dom = await JSDOM.fromURL(`https://github.com/${user}`);
+  const node = dom.window.document.querySelector('meta[property="og:image"]');
+  const url = node.getAttribute("content");
+  https.get(url, (res) => {
+    res.pipe(fs.createWriteStream("avatar.png"));
+  });
+};
 
 /**
  * <pre><code class="javascript">import { contributionGraph } from "octo-image";
@@ -110,7 +125,16 @@ const _parseInvolvesArgs = (args) => {
 const args = process.argv.slice(2);
 const command = args.shift();
 
-if (command == "contribution-graph") {
+if (command == "avatar") {
+  const [user] = args;
+  if (user) {
+    (async () => {
+      await avatar(user);
+    })();
+  } else {
+    console.log(AVATAR_USAGE);
+  }
+} else if (command == "contribution-graph") {
   const [user] = args;
   if (user) {
     (async () => {
@@ -147,6 +171,7 @@ if (command == "contribution-graph") {
     console.log(OPEN_GRAPH_USAGE);
   }
 } else {
+  console.log(AVATAR_USAGE);
   console.log(CONTRIBUTION_GRAPH_USAGE);
   console.log(INVOLVES_USAGE);
   console.log(OPEN_GRAPH_USAGE);
