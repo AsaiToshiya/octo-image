@@ -14,6 +14,14 @@ npm i -g octo-image
 
 ## 使い方
 
+### アバター
+
+```bash
+octo-image avatar <user>
+```
+
+![avatar.png](avatar.png)
+
 ### コントリビューション グラフ
 
 ```bash
