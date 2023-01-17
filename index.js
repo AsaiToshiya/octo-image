@@ -17,12 +17,7 @@ const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
  * @param {string} user - ユーザー
  */
 export const avatar = async (user) => {
-  const dom = await JSDOM.fromURL(`https://github.com/${user}`);
-  const node = dom.window.document.querySelector('meta[property="og:image"]');
-  const url = node.getAttribute("content");
-  https.get(url, (res) => {
-    res.pipe(fs.createWriteStream("avatar.png"));
-  });
+  _downloadOpenGraph(`https://github.com/${user}`, "avatar.png");
 };
 
 /**
@@ -102,11 +97,15 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
  * @param {string} repo - リポジトリ
  */
 export const openGraph = async (user, repo) => {
-  const dom = await JSDOM.fromURL(`https://github.com/${user}/${repo}`);
+  _downloadOpenGraph(`https://github.com/${user}/${repo}`, "open-graph.png");
+};
+
+const _downloadOpenGraph = async (pageUrl, filename) => {
+  const dom = await JSDOM.fromURL(pageUrl);
   const node = dom.window.document.querySelector('meta[property="og:image"]');
   const url = node.getAttribute("content");
   https.get(url, (res) => {
-    res.pipe(fs.createWriteStream("open-graph.png"));
+    res.pipe(fs.createWriteStream(filename));
   });
 };
 
