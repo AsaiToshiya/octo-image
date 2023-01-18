@@ -124,54 +124,62 @@ const _parseInvolvesArgs = (args) => {
 const args = process.argv.slice(2);
 const command = args.shift();
 
-if (command == "avatar") {
-  const [user] = args;
-  if (user) {
-    (async () => {
-      await avatar(user);
+const subcommand = {
+  avatar: (args) => {
+    const [user] = args;
+    if (user) {
+      (async () => {
+        await avatar(user);
+      })();
+    } else {
+      console.log(AVATAR_USAGE);
+    }
+  },
+  "contribution-graph": (args) => {
+    const [user] = args;
+    if (user) {
+      (async () => {
+        await contributionGraph(user);
+      })();
+    } else {
+      console.log(CONTRIBUTION_GRAPH_USAGE);
+    }
+  },
+  involves: (args) => {
+    const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
+      _parseInvolvesArgs(args);
+    if (
+      user &&
+      (!hasExcludeUser ||
+        (excludeUser &&
+          excludeUser != "--absolute-time" &&
+          excludeUser != "--sort")) &&
+      (!hasSort ||
+        (sort && sort != "--absolute-time" && sort != "--exclude-user"))
+    ) {
+      (async () => {
+        await involves(user, absoluteTime, excludeUser, sort);
+      })();
+    } else {
+      console.log(INVOLVES_USAGE);
+    }
+  },
+  "open-graph": (args) => {
+    const [user, repo] = args;
+    if (user && repo) {
+      (async () => {
+        await openGraph(user, repo);
+      })();
+    } else {
+      console.log(OPEN_GRAPH_USAGE);
+    }
+  },
+}[command];
+subcommand
+  ? subcommand(args)
+  : (() => {
+      console.log(AVATAR_USAGE);
+      console.log(CONTRIBUTION_GRAPH_USAGE);
+      console.log(INVOLVES_USAGE);
+      console.log(OPEN_GRAPH_USAGE);
     })();
-  } else {
-    console.log(AVATAR_USAGE);
-  }
-} else if (command == "contribution-graph") {
-  const [user] = args;
-  if (user) {
-    (async () => {
-      await contributionGraph(user);
-    })();
-  } else {
-    console.log(CONTRIBUTION_GRAPH_USAGE);
-  }
-} else if (command == "involves") {
-  const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
-    _parseInvolvesArgs(args);
-  if (
-    user &&
-    (!hasExcludeUser ||
-      (excludeUser &&
-        excludeUser != "--absolute-time" &&
-        excludeUser != "--sort")) &&
-    (!hasSort ||
-      (sort && sort != "--absolute-time" && sort != "--exclude-user"))
-  ) {
-    (async () => {
-      await involves(user, absoluteTime, excludeUser, sort);
-    })();
-  } else {
-    console.log(INVOLVES_USAGE);
-  }
-} else if (command == "open-graph") {
-  const [user, repo] = args;
-  if (user && repo) {
-    (async () => {
-      await openGraph(user, repo);
-    })();
-  } else {
-    console.log(OPEN_GRAPH_USAGE);
-  }
-} else {
-  console.log(AVATAR_USAGE);
-  console.log(CONTRIBUTION_GRAPH_USAGE);
-  console.log(INVOLVES_USAGE);
-  console.log(OPEN_GRAPH_USAGE);
-}
