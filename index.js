@@ -17,7 +17,7 @@ const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
  * @param {string} user - ユーザー
  */
 export const avatar = async (user) => {
-  _downloadOpenGraph(`https://github.com/${user}`, "avatar.png");
+  _downloadOpenGraph(`https://github.com/${user}`, "./examples/avatar.png");
 };
 
 /**
@@ -34,7 +34,7 @@ export const contributionGraph = async (user) => {
     await page.goto(`https://github.com/${user}`);
     await page.waitForSelector(".js-calendar-graph-svg");
     const element = await page.$(".js-calendar-graph-svg");
-    await element.screenshot({ path: "contribution-graph.png" });
+    await element.screenshot({ path: "./examples/contribution-graph.png" });
   } finally {
     await browser.close();
   }
@@ -84,7 +84,7 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
     if (elementToHide) {
       await elementToHide.evaluate((el) => (el.style.display = "none"));
     }
-    await targetElement.screenshot({ path: "involves.png" });
+    await targetElement.screenshot({ path: "./examples/involves.png" });
   } finally {
     await browser.close();
   }
@@ -97,7 +97,7 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
  * @param {string} repo - リポジトリ
  */
 export const openGraph = async (user, repo) => {
-  _downloadOpenGraph(`https://github.com/${user}/${repo}`, "open-graph.png");
+  _downloadOpenGraph(`https://github.com/${user}/${repo}`, "./examples/open-graph.png");
 };
 
 const _downloadOpenGraph = async (pageUrl, filename) => {
