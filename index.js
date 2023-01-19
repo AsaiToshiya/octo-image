@@ -7,6 +7,7 @@ import { chromium } from "playwright-core";
 
 const AVATAR_USAGE = "octo-image avatar <user>";
 const CONTRIBUTION_GRAPH_USAGE = "octo-image contribution-graph <user>";
+const HELP_USAGE = "octo-image help";
 const INVOLVES_USAGE =
   "octo-image involves [--absolute-time] [--exclude-user <user>] [--sort <criteria>] <user>";
 const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
@@ -145,6 +146,13 @@ const subcommand = {
       console.log(CONTRIBUTION_GRAPH_USAGE);
     }
   },
+  help: () => {
+    console.log(AVATAR_USAGE);
+    console.log(CONTRIBUTION_GRAPH_USAGE);
+    console.log(HELP_USAGE);
+    console.log(INVOLVES_USAGE);
+    console.log(OPEN_GRAPH_USAGE);
+  },
   involves: (args) => {
     const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
       _parseInvolvesArgs(args);
@@ -180,6 +188,7 @@ subcommand
   : (() => {
       console.log(AVATAR_USAGE);
       console.log(CONTRIBUTION_GRAPH_USAGE);
+      console.log(HELP_USAGE);
       console.log(INVOLVES_USAGE);
       console.log(OPEN_GRAPH_USAGE);
     })();
