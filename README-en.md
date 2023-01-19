@@ -20,7 +20,7 @@ npm i -g octo-image
 octo-image avatar <user>
 ```
 
-![avatar.png](avatar.png)
+![avatar.png](./examples/avatar.png)
 
 ### Contribution Graph
 
@@ -28,7 +28,7 @@ octo-image avatar <user>
 octo-image contribution-graph <user>
 ```
 
-![contribution-graph.png](contribution-graph.png)
+![contribution-graph.png](./examples/contribution-graph.png)
 
 ### Involves
 
@@ -36,7 +36,7 @@ octo-image contribution-graph <user>
 octo-image involves [--absolute-time] [--exclude-user <user>] [--sort <criteria>] <user>
 ```
 
-[involves.png](involves.png)
+[involves.png](./examples/involves.png)
 
 ### Open Graph
 
@@ -44,7 +44,7 @@ octo-image involves [--absolute-time] [--exclude-user <user>] [--sort <criteria>
 octo-image open-graph <user> <repo>
 ```
 
-![open-graph.png](open-graph.png)
+![open-graph.png](./examples/open-graph.png)
 
 ## API
 
