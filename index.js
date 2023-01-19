@@ -44,9 +44,9 @@ export const contributionGraph = async (user) => {
  * <pre><code class="javascript">import { involves } from "octo-image";
  * </code></pre>
  * @param {string} user - ユーザー
- * @param {boolean} absoluteTime - true の場合は絶対時刻。それ以外の場合は相対時刻
- * @param {string} excludeUser - 除外するユーザー
- * @param {string} sort - ソート修飾子。https://docs.github.com/ja/search-github/getting-started-with-searching-on-github/sorting-search-results を参照
+ * @param {boolean} [absoluteTime] - true の場合は絶対時刻。それ以外の場合は相対時刻
+ * @param {string} [excludeUser] - 除外するユーザー
+ * @param {string} [sort] - ソート修飾子。https://docs.github.com/ja/search-github/getting-started-with-searching-on-github/sorting-search-results を参照
  */
 export const involves = async (user, absoluteTime, excludeUser, sort) => {
   const browser = await chromium.launch({ channel: "chrome" });
