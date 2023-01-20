@@ -28,7 +28,7 @@ export const avatar = async (user) => {
  */
 export const contributionGraph = async (user) => {
   const browser = await chromium.launch({ channel: "chrome" });
-  try {
+  _try(async () => {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
     const page = await context.newPage();
     page.setDefaultTimeout(0);
@@ -36,9 +36,8 @@ export const contributionGraph = async (user) => {
     await page.waitForSelector(".js-calendar-graph-svg");
     const element = await page.$(".js-calendar-graph-svg");
     await element.screenshot({ path: "contribution-graph.png" });
-  } finally {
-    await browser.close();
-  }
+  });
+  await browser.close();
 };
 
 /**
@@ -51,7 +50,7 @@ export const contributionGraph = async (user) => {
  */
 export const involves = async (user, absoluteTime, excludeUser, sort) => {
   const browser = await chromium.launch({ channel: "chrome" });
-  try {
+  _try(async () => {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
     const page = await context.newPage();
     page.setDefaultTimeout(0);
@@ -86,9 +85,8 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
       await elementToHide.evaluate((el) => (el.style.display = "none"));
     }
     await targetElement.screenshot({ path: "involves.png" });
-  } finally {
-    await browser.close();
-  }
+  });
+  await browser.close();
 };
 
 /**
@@ -128,6 +126,12 @@ const _parseInvolvesArgs = (args) => {
   const hasSort = sortIndex > -1;
   const sort = hasSort ? args[sortIndex + 1] : null;
   return { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime };
+};
+
+const _try = async (func) => {
+  try {
+    await func();
+  } catch (e) {}
 };
 
 const args = process.argv.slice(2);
