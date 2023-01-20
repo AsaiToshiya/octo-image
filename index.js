@@ -110,6 +110,14 @@ const _downloadOpenGraph = async (pageUrl, filename) => {
   });
 };
 
+const _help = () => {
+  console.log(AVATAR_USAGE);
+  console.log(CONTRIBUTION_GRAPH_USAGE);
+  console.log(HELP_USAGE);
+  console.log(INVOLVES_USAGE);
+  console.log(OPEN_GRAPH_USAGE);
+};
+
 const _parseInvolvesArgs = (args) => {
   const user = args.pop();
   const absoluteTime = args.includes("--absolute-time");
@@ -146,13 +154,7 @@ const subcommand = {
       console.log(CONTRIBUTION_GRAPH_USAGE);
     }
   },
-  help: () => {
-    console.log(AVATAR_USAGE);
-    console.log(CONTRIBUTION_GRAPH_USAGE);
-    console.log(HELP_USAGE);
-    console.log(INVOLVES_USAGE);
-    console.log(OPEN_GRAPH_USAGE);
-  },
+  help: _help,
   involves: (args) => {
     const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
       _parseInvolvesArgs(args);
@@ -183,12 +185,4 @@ const subcommand = {
     }
   },
 }[subcommandName];
-subcommand
-  ? subcommand(args)
-  : (() => {
-      console.log(AVATAR_USAGE);
-      console.log(CONTRIBUTION_GRAPH_USAGE);
-      console.log(HELP_USAGE);
-      console.log(INVOLVES_USAGE);
-      console.log(OPEN_GRAPH_USAGE);
-    })();
+subcommand ? subcommand(args) : _help();
