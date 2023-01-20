@@ -123,7 +123,7 @@ const _parseInvolvesArgs = (args) => {
 };
 
 const args = process.argv.slice(2);
-const command = args.shift();
+const subcommandName = args.shift();
 
 const subcommand = {
   avatar: (args) => {
@@ -182,7 +182,7 @@ const subcommand = {
       console.log(OPEN_GRAPH_USAGE);
     }
   },
-}[command];
+}[subcommandName];
 subcommand
   ? subcommand(args)
   : (() => {
