@@ -134,8 +134,7 @@ const _try = async (func) => {
   } catch (e) {}
 };
 
-const args = process.argv.slice(2);
-const subcommandName = args.shift();
+const [subcommandName, ...args] = process.argv.slice(2);
 
 const subcommand = {
   avatar: (args) => {
