@@ -91,13 +91,12 @@ cd octo-image
 npm install
 ```
 
-### Release
+### Publishing
 
 ```bash
 npm version minor
 git push origin main
 git push origin --tags
-npm publish
 ```
 
 ## License
