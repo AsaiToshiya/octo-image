@@ -66,10 +66,7 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
       await _convertToAbsoluteTime(targetElement);
     }
 
-    const elementToHide = await targetElement.$(".paginate-container");
-    if (elementToHide) {
-      await elementToHide.evaluate((el) => (el.style.display = "none"));
-    }
+    await _hidePagination(targetElement);
     await targetElement.screenshot({ path: "involves.png" });
   });
   await browser.close();
@@ -118,6 +115,13 @@ const _help = () => {
   console.log(HELP_USAGE);
   console.log(INVOLVES_USAGE);
   console.log(OPEN_GRAPH_USAGE);
+};
+
+const _hidePagination = async (targetElement) => {
+  const elementToHide = await targetElement.$(".paginate-container");
+  if (elementToHide) {
+    await elementToHide.evaluate((el) => (el.style.display = "none"));
+  }
 };
 
 const _parseInvolvesArgs = (args) => {
