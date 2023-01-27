@@ -63,21 +63,7 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
     const targetElement = await page.$("#issue_search_results");
 
     if (absoluteTime) {
-      const relativeTimes = await targetElement.$$("relative-time");
-      for (const relativeTime of relativeTimes) {
-        const dateTime = await relativeTime.evaluate((el) =>
-          el.getAttribute("datetime")
-        );
-        const date = new Date(dateTime);
-        const day = date.getDate();
-        const month = date.toLocaleString("en-us", { month: "short" });
-        const year = date.getFullYear();
-        await relativeTime.evaluate(
-          (el, date) =>
-            (el.innerText = `on ${date.day} ${date.month} ${date.year}`),
-          { day, month, year }
-        );
-      }
+      await _convertToAbsoluteTime(targetElement);
     }
 
     const elementToHide = await targetElement.$(".paginate-container");
@@ -97,6 +83,24 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
  */
 export const openGraph = async (user, repo) => {
   _downloadOpenGraph(`https://github.com/${user}/${repo}`, "open-graph.png");
+};
+
+const _convertToAbsoluteTime = async (targetElement) => {
+  const relativeTimes = await targetElement.$$("relative-time");
+  for (const relativeTime of relativeTimes) {
+    const dateTime = await relativeTime.evaluate((el) =>
+      el.getAttribute("datetime")
+    );
+    const date = new Date(dateTime);
+    const day = date.getDate();
+    const month = date.toLocaleString("en-us", { month: "short" });
+    const year = date.getFullYear();
+    await relativeTime.evaluate(
+      (el, date) =>
+        (el.innerText = `on ${date.day} ${date.month} ${date.year}`),
+      { day, month, year }
+    );
+  }
 };
 
 const _downloadOpenGraph = async (pageUrl, filename) => {
