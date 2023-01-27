@@ -28,7 +28,7 @@ export const avatar = async (user) => {
  */
 export const contributionGraph = async (user) => {
   const browser = await chromium.launch({ channel: "chrome" });
-  _try(async () => {
+  await _try(async () => {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
     const page = await context.newPage();
     page.setDefaultTimeout(0);
@@ -50,7 +50,7 @@ export const contributionGraph = async (user) => {
  */
 export const involves = async (user, absoluteTime, excludeUser, sort) => {
   const browser = await chromium.launch({ channel: "chrome" });
-  _try(async () => {
+  await _try(async () => {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
     const page = await context.newPage();
     page.setDefaultTimeout(0);
