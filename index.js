@@ -6,7 +6,8 @@ import { JSDOM } from "jsdom";
 import { chromium } from "playwright-core";
 
 const AVATAR_USAGE = "octo-image avatar <user>";
-const CONTRIBUTION_GRAPH_USAGE = "octo-image contribution-graph <user>";
+const CONTRIBUTION_GRAPH_USAGE =
+  "octo-image contribution-graph [--year <year>] <user>";
 const HELP_USAGE = "octo-image help";
 const INVOLVES_USAGE =
   "octo-image involves [--absolute-time] [--exclude-user <user>] [--sort <criteria>] <user>";
@@ -25,14 +26,18 @@ export const avatar = async (user) => {
  * <pre><code class="javascript">import { contributionGraph } from "octo-image";
  * </code></pre>
  * @param {string} user - ユーザー
+ * @param {number} [year] - 年
  */
-export const contributionGraph = async (user) => {
+export const contributionGraph = async (user, year) => {
   const browser = await chromium.launch({ channel: "chrome" });
   try {
     const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
     const page = await context.newPage();
     page.setDefaultTimeout(0);
-    await page.goto(`https://github.com/${user}`);
+    await page.goto(
+      `https://github.com/${user}` +
+        (year ? `?tab=overview&from=${year}-01-01&to=${year}-12-31` : "")
+    );
     await page.waitForSelector(".js-calendar-graph-svg");
     const element = await page.$(".js-calendar-graph-svg");
     await element.screenshot({ path: "contribution-graph.png" });
@@ -110,6 +115,15 @@ const _downloadOpenGraph = async (pageUrl, filename) => {
   });
 };
 
+const _parseContributionGraphArgs = (args) => {
+  const newArgs = [...args];
+  const user = newArgs.pop();
+  const yearIndex = newArgs.indexOf("--year");
+  const hasYear = yearIndex > -1;
+  const year = hasYear ? newArgs[yearIndex + 1] : null;
+  return { user, hasYear, year };
+};
+
 const _parseInvolvesArgs = (args) => {
   const user = args.pop();
   const absoluteTime = args.includes("--absolute-time");
@@ -137,10 +151,10 @@ const subcommand = {
     }
   },
   "contribution-graph": (args) => {
-    const [user] = args;
-    if (user) {
+    const { user, hasYear, year } = _parseContributionGraphArgs(args);
+    if (user && (!hasYear || year)) {
       (async () => {
-        await contributionGraph(user);
+        await contributionGraph(user, year);
       })();
     } else {
       console.log(CONTRIBUTION_GRAPH_USAGE);
