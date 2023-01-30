@@ -27,17 +27,11 @@ export const avatar = async (user) => {
  * @param {string} user - ユーザー
  */
 export const contributionGraph = async (user) => {
-  const browser = await chromium.launch({ channel: "chrome" });
-  await _try(async () => {
-    const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
-    const page = await context.newPage();
-    page.setDefaultTimeout(0);
-    await page.goto(`https://github.com/${user}`);
-    await page.waitForSelector(".js-calendar-graph-svg");
-    const element = await page.$(".js-calendar-graph-svg");
-    await element.screenshot({ path: "contribution-graph.png" });
-  });
-  await browser.close();
+  await _screenshot(
+    `https://github.com/${user}`,
+    ".js-calendar-graph-svg",
+    "contribution-graph.png"
+  );
 };
 
 /**
@@ -49,27 +43,20 @@ export const contributionGraph = async (user) => {
  * @param {string} [sort] - ソート修飾子。https://docs.github.com/ja/search-github/getting-started-with-searching-on-github/sorting-search-results を参照
  */
 export const involves = async (user, absoluteTime, excludeUser, sort) => {
-  const browser = await chromium.launch({ channel: "chrome" });
-  await _try(async () => {
-    const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
-    const page = await context.newPage();
-    page.setDefaultTimeout(0);
-    await page.goto(
-      `https://github.com/search?q=involves:${user}` +
-        (excludeUser ? `+-user:${excludeUser}` : "") +
-        (sort ? `+sort:${sort}` : "")
-    );
-    await page.waitForSelector("#issue_search_results");
-    const targetElement = await page.$("#issue_search_results");
+  await _screenshot(
+    `https://github.com/search?q=involves:${user}` +
+      (excludeUser ? `+-user:${excludeUser}` : "") +
+      (sort ? `+sort:${sort}` : ""),
+    "#issue_search_results",
+    "involves.png",
+    async (targetElement) => {
+      if (absoluteTime) {
+        await _convertToAbsoluteTime(targetElement);
+      }
 
-    if (absoluteTime) {
-      await _convertToAbsoluteTime(targetElement);
+      await _hidePagination(targetElement);
     }
-
-    await _hidePagination(targetElement);
-    await targetElement.screenshot({ path: "involves.png" });
-  });
-  await browser.close();
+  );
 };
 
 /**
@@ -134,6 +121,23 @@ const _parseInvolvesArgs = (args) => {
   const hasSort = sortIndex > -1;
   const sort = hasSort ? args[sortIndex + 1] : null;
   return { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime };
+};
+
+const _screenshot = async (url, selector, filename, additionalScripts) => {
+  const browser = await chromium.launch({ channel: "chrome" });
+  await _try(async () => {
+    const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
+    const page = await context.newPage();
+    page.setDefaultTimeout(0);
+    await page.goto(url);
+    await page.waitForSelector(selector);
+    const targetElement = await page.$(selector);
+
+    additionalScripts ? await additionalScripts(targetElement) : undefined;
+
+    await targetElement.screenshot({ path: filename });
+  });
+  await browser.close();
 };
 
 const _try = async (func) => {
