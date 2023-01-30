@@ -149,8 +149,7 @@ const _try = async (func) => {
 const [subcommandName, ...args] = process.argv.slice(2);
 
 const subcommand = {
-  avatar: async (args) => {
-    const [user] = args;
+  avatar: async ([user]) => {
     if (user) {
       await avatar(user);
     } else {
