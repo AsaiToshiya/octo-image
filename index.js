@@ -149,28 +149,24 @@ const _try = async (func) => {
 const [subcommandName, ...args] = process.argv.slice(2);
 
 const subcommand = {
-  avatar: (args) => {
+  avatar: async (args) => {
     const [user] = args;
     if (user) {
-      (async () => {
-        await avatar(user);
-      })();
+      await avatar(user);
     } else {
       console.log(AVATAR_USAGE);
     }
   },
-  "contribution-graph": (args) => {
+  "contribution-graph": async (args) => {
     const [user] = args;
     if (user) {
-      (async () => {
-        await contributionGraph(user);
-      })();
+      await contributionGraph(user);
     } else {
       console.log(CONTRIBUTION_GRAPH_USAGE);
     }
   },
   help: _help,
-  involves: (args) => {
+  involves: async (args) => {
     const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
       _parseInvolvesArgs(args);
     if (
@@ -182,19 +178,15 @@ const subcommand = {
       (!hasSort ||
         (sort && sort != "--absolute-time" && sort != "--exclude-user"))
     ) {
-      (async () => {
-        await involves(user, absoluteTime, excludeUser, sort);
-      })();
+      await involves(user, absoluteTime, excludeUser, sort);
     } else {
       console.log(INVOLVES_USAGE);
     }
   },
-  "open-graph": (args) => {
+  "open-graph": async (args) => {
     const [user, repo] = args;
     if (user && repo) {
-      (async () => {
-        await openGraph(user, repo);
-      })();
+      await openGraph(user, repo);
     } else {
       console.log(OPEN_GRAPH_USAGE);
     }
