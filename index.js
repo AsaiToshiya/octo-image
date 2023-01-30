@@ -80,7 +80,12 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
         const year = date.getFullYear();
         await relativeTime.evaluate(
           (el, date) =>
-            (el.innerText = `on ${date.day} ${date.month} ${date.year}`),
+            el.replaceWith(
+              Object.assign(document.createElement("span"), {
+                innerText: `on ${date.day} ${date.month} ${date.year}`,
+                class: "no-wrap",
+              })
+            ),
           { day, month, year }
         );
       }
