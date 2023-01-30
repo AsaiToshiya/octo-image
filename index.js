@@ -53,7 +53,6 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
       if (absoluteTime) {
         await _convertToAbsoluteTime(targetElement);
       }
-
       await _hidePagination(targetElement);
     }
   );
@@ -147,7 +146,6 @@ const _try = async (func) => {
 };
 
 const [subcommandName, ...args] = process.argv.slice(2);
-
 const subcommand = {
   avatar: async ([user]) => {
     if (user) {
