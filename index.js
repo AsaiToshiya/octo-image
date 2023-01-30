@@ -154,8 +154,7 @@ const subcommand = {
       console.log(AVATAR_USAGE);
     }
   },
-  "contribution-graph": async (args) => {
-    const [user] = args;
+  "contribution-graph": async ([user]) => {
     if (user) {
       await contributionGraph(user);
     } else {
