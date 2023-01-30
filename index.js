@@ -179,8 +179,7 @@ const subcommand = {
       console.log(INVOLVES_USAGE);
     }
   },
-  "open-graph": async (args) => {
-    const [user, repo] = args;
+  "open-graph": async ([user, repo]) => {
     if (user && repo) {
       await openGraph(user, repo);
     } else {
