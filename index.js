@@ -50,9 +50,7 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
     "#issue_search_results",
     "involves.png",
     async (targetElement) => {
-      if (absoluteTime) {
-        await _convertToAbsoluteTime(targetElement);
-      }
+      absoluteTime ? await _convertToAbsoluteTime(targetElement) : undefined;
       await _hidePagination(targetElement);
     }
   );
@@ -105,9 +103,9 @@ const _help = () => {
 
 const _hidePagination = async (targetElement) => {
   const elementToHide = await targetElement.$(".paginate-container");
-  if (elementToHide) {
-    await elementToHide.evaluate((el) => (el.style.display = "none"));
-  }
+  elementToHide
+    ? await elementToHide.evaluate((el) => (el.style.display = "none"))
+    : undefined;
 };
 
 const _parseInvolvesArgs = (args) => {
@@ -148,18 +146,12 @@ const _try = async (func) => {
 const [subcommandName, ...args] = process.argv.slice(2);
 const subcommand = {
   avatar: async ([user]) => {
-    if (user) {
-      await avatar(user);
-    } else {
-      console.log(AVATAR_USAGE);
-    }
+    user ? await avatar(user) : console.log(AVATAR_USAGE);
   },
   "contribution-graph": async ([user]) => {
-    if (user) {
-      await contributionGraph(user);
-    } else {
-      console.log(CONTRIBUTION_GRAPH_USAGE);
-    }
+    user
+      ? await contributionGraph(user)
+      : console.log(CONTRIBUTION_GRAPH_USAGE);
   },
   involves: async (args) => {
     const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
@@ -172,18 +164,12 @@ const subcommand = {
     const isValidSort =
       !hasSort ||
       (sort && sort != "--absolute-time" && sort != "--exclude-user");
-    if (user && isValidExcludeUser && isValidSort) {
-      await involves(user, absoluteTime, excludeUser, sort);
-    } else {
-      console.log(INVOLVES_USAGE);
-    }
+    user && isValidExcludeUser && isValidSort
+      ? await involves(user, absoluteTime, excludeUser, sort)
+      : console.log(INVOLVES_USAGE);
   },
   "open-graph": async ([user, repo]) => {
-    if (user && repo) {
-      await openGraph(user, repo);
-    } else {
-      console.log(OPEN_GRAPH_USAGE);
-    }
+    user && repo ? await openGraph(user, repo) : console.log(OPEN_GRAPH_USAGE);
   },
 }[subcommandName];
 subcommand ? subcommand(args) : _help();
