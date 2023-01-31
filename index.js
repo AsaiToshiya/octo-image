@@ -164,15 +164,15 @@ const subcommand = {
   involves: async (args) => {
     const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
       _parseInvolvesArgs(args);
-    if (
-      user &&
-      (!hasExcludeUser ||
-        (excludeUser &&
-          excludeUser != "--absolute-time" &&
-          excludeUser != "--sort")) &&
-      (!hasSort ||
-        (sort && sort != "--absolute-time" && sort != "--exclude-user"))
-    ) {
+    const isValidExcludeUser =
+      !hasExcludeUser ||
+      (excludeUser &&
+        excludeUser != "--absolute-time" &&
+        excludeUser != "--sort");
+    const isValidSort =
+      !hasSort ||
+      (sort && sort != "--absolute-time" && sort != "--exclude-user");
+    if (user && isValidExcludeUser && isValidSort) {
       await involves(user, absoluteTime, excludeUser, sort);
     } else {
       console.log(INVOLVES_USAGE);
