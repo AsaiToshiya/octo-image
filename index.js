@@ -161,7 +161,6 @@ const subcommand = {
       console.log(CONTRIBUTION_GRAPH_USAGE);
     }
   },
-  help: _help,
   involves: async (args) => {
     const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
       _parseInvolvesArgs(args);
