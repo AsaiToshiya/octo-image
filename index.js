@@ -129,9 +129,7 @@ const _screenshot = async (url, selector, filename, additionalScripts) => {
     await page.goto(url);
     await page.waitForSelector(selector);
     const targetElement = await page.$(selector);
-
     additionalScripts ? await additionalScripts(targetElement) : undefined;
-
     await targetElement.screenshot({ path: filename });
   });
   await browser.close();
