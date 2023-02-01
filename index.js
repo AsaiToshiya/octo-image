@@ -68,20 +68,22 @@ export const openGraph = async (user, repo) => {
 
 const _convertToAbsoluteTime = async (targetElement) => {
   const relativeTimes = await targetElement.$$("relative-time");
-  for (const relativeTime of relativeTimes) {
-    const dateTime = await relativeTime.evaluate((el) =>
-      el.getAttribute("datetime")
-    );
-    const date = new Date(dateTime);
-    const day = date.getDate();
-    const month = date.toLocaleString("en-us", { month: "short" });
-    const year = date.getFullYear();
-    await relativeTime.evaluate(
-      (el, date) =>
-        (el.innerText = `on ${date.day} ${date.month} ${date.year}`),
-      { day, month, year }
-    );
-  }
+  await Promise.all(
+    relativeTimes.map(async (relativeTime) => {
+      const dateTime = await relativeTime.evaluate((el) =>
+        el.getAttribute("datetime")
+      );
+      const date = new Date(dateTime);
+      const day = date.getDate();
+      const month = date.toLocaleString("en-us", { month: "short" });
+      const year = date.getFullYear();
+      await relativeTime.evaluate(
+        (el, date) =>
+          (el.innerText = `on ${date.day} ${date.month} ${date.year}`),
+        { day, month, year }
+      );
+    })
+  );
 };
 
 const _downloadOpenGraph = async (pageUrl, filename) => {
