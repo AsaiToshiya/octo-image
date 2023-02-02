@@ -144,32 +144,35 @@ const _try = async (func) => {
 };
 
 const [subcommandName, ...args] = process.argv.slice(2);
-const subcommand = {
-  avatar: async ([user]) => {
-    user ? await avatar(user) : console.log(AVATAR_USAGE);
-  },
-  "contribution-graph": async ([user]) => {
-    user
-      ? await contributionGraph(user)
-      : console.log(CONTRIBUTION_GRAPH_USAGE);
-  },
-  involves: async (args) => {
-    const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
-      _parseInvolvesArgs(args);
-    const isValidExcludeUser =
-      !hasExcludeUser ||
-      (excludeUser &&
-        excludeUser != "--absolute-time" &&
-        excludeUser != "--sort");
-    const isValidSort =
-      !hasSort ||
-      (sort && sort != "--absolute-time" && sort != "--exclude-user");
-    user && isValidExcludeUser && isValidSort
-      ? await involves(user, absoluteTime, excludeUser, sort)
-      : console.log(INVOLVES_USAGE);
-  },
-  "open-graph": async ([user, repo]) => {
-    user && repo ? await openGraph(user, repo) : console.log(OPEN_GRAPH_USAGE);
-  },
-}[subcommandName];
+const subcommand =
+  {
+    avatar: async ([user]) => {
+      user ? await avatar(user) : console.log(AVATAR_USAGE);
+    },
+    "contribution-graph": async ([user]) => {
+      user
+        ? await contributionGraph(user)
+        : console.log(CONTRIBUTION_GRAPH_USAGE);
+    },
+    involves: async (args) => {
+      const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
+        _parseInvolvesArgs(args);
+      const isValidExcludeUser =
+        !hasExcludeUser ||
+        (excludeUser &&
+          excludeUser != "--absolute-time" &&
+          excludeUser != "--sort");
+      const isValidSort =
+        !hasSort ||
+        (sort && sort != "--absolute-time" && sort != "--exclude-user");
+      user && isValidExcludeUser && isValidSort
+        ? await involves(user, absoluteTime, excludeUser, sort)
+        : console.log(INVOLVES_USAGE);
+    },
+    "open-graph": async ([user, repo]) => {
+      user && repo
+        ? await openGraph(user, repo)
+        : console.log(OPEN_GRAPH_USAGE);
+    },
+  }[subcommandName] ?? _help();
 subcommand ? subcommand(args) : _help();
