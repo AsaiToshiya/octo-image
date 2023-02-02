@@ -175,4 +175,4 @@ const subcommand =
         : console.log(OPEN_GRAPH_USAGE);
     },
   }[subcommandName] ?? _help();
-subcommand ? subcommand(args) : _help();
+subcommand(args);
