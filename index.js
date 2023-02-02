@@ -19,7 +19,7 @@ const OPEN_GRAPH_USAGE = "octo-image open-graph <user> <repo>";
  * @param {string} user - ユーザー
  */
 export const avatar = async (user) => {
-  _downloadOpenGraph(`https://github.com/${user}`, "avatar.png");
+  await _downloadOpenGraph(`https://github.com/${user}`, "avatar.png");
 };
 
 /**
@@ -108,7 +108,7 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
  * @param {string} repo - リポジトリ
  */
 export const openGraph = async (user, repo) => {
-  _downloadOpenGraph(`https://github.com/${user}/${repo}`, "open-graph.png");
+  await _downloadOpenGraph(`https://github.com/${user}/${repo}`, "open-graph.png");
 };
 
 const _downloadOpenGraph = async (pageUrl, filename) => {
