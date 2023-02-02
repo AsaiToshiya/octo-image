@@ -50,7 +50,7 @@ export const involves = async (user, absoluteTime, excludeUser, sort) => {
     "#issue_search_results",
     "involves.png",
     async (targetElement) => {
-      absoluteTime ? await _convertToAbsoluteTime(targetElement) : undefined;
+      absoluteTime && (await _convertToAbsoluteTime(targetElement));
       await _hidePagination(targetElement);
     }
   );
@@ -105,9 +105,8 @@ const _help = () => {
 
 const _hidePagination = async (targetElement) => {
   const elementToHide = await targetElement.$(".paginate-container");
-  elementToHide
-    ? await elementToHide.evaluate((el) => (el.style.display = "none"))
-    : undefined;
+  elementToHide &&
+    (await elementToHide.evaluate((el) => (el.style.display = "none")));
 };
 
 const _parseInvolvesArgs = (args) => {
@@ -131,7 +130,7 @@ const _screenshot = async (url, selector, filename, additionalScripts) => {
     await page.goto(url);
     await page.waitForSelector(selector);
     const targetElement = await page.$(selector);
-    additionalScripts ? await additionalScripts(targetElement) : undefined;
+    additionalScripts && (await additionalScripts(targetElement));
     await targetElement.screenshot({ path: filename });
   });
   await browser.close();
