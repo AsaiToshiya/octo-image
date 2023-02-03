@@ -29,21 +29,12 @@ export const avatar = async (user) => {
  * @param {number} [year] - 年
  */
 export const contributionGraph = async (user, year) => {
-  const browser = await chromium.launch({ channel: "chrome" });
-  try {
-    const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
-    const page = await context.newPage();
-    page.setDefaultTimeout(0);
-    await page.goto(
-      `https://github.com/${user}` +
-        (year ? `?tab=overview&from=${year}-01-01&to=${year}-12-31` : "")
-    );
-    await page.waitForSelector(".js-calendar-graph-svg");
-    const element = await page.$(".js-calendar-graph-svg");
-    await element.screenshot({ path: "contribution-graph.png" });
-  } finally {
-    await browser.close();
-  }
+  await _screenshot(
+    `https://github.com/${user}` +
+      (year ? `?tab=overview&from=${year}-01-01&to=${year}-12-31` : ""),
+    ".js-calendar-graph-svg",
+    "contribution-graph.png"
+  );
 };
 
 /**
@@ -55,50 +46,17 @@ export const contributionGraph = async (user, year) => {
  * @param {string} [sort] - ソート修飾子。https://docs.github.com/ja/search-github/getting-started-with-searching-on-github/sorting-search-results を参照
  */
 export const involves = async (user, absoluteTime, excludeUser, sort) => {
-  const browser = await chromium.launch({ channel: "chrome" });
-  try {
-    const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
-    const page = await context.newPage();
-    page.setDefaultTimeout(0);
-    await page.goto(
-      `https://github.com/search?q=involves:${user}` +
-        (excludeUser ? `+-user:${excludeUser}` : "") +
-        (sort ? `+sort:${sort}` : "")
-    );
-    await page.waitForSelector("#issue_search_results");
-    const targetElement = await page.$("#issue_search_results");
-
-    if (absoluteTime) {
-      const relativeTimes = await targetElement.$$("relative-time");
-      for (const relativeTime of relativeTimes) {
-        const dateTime = await relativeTime.evaluate((el) =>
-          el.getAttribute("datetime")
-        );
-        const date = new Date(dateTime);
-        const day = date.getDate();
-        const month = date.toLocaleString("en-us", { month: "short" });
-        const year = date.getFullYear();
-        await relativeTime.evaluate(
-          (el, date) =>
-            el.replaceWith(
-              Object.assign(document.createElement("span"), {
-                innerText: `on ${date.day} ${date.month} ${date.year}`,
-                class: "no-wrap",
-              })
-            ),
-          { day, month, year }
-        );
-      }
+  await _screenshot(
+    `https://github.com/search?q=involves:${user}` +
+      (excludeUser ? `+-user:${excludeUser}` : "") +
+      (sort ? `+sort:${sort}` : ""),
+    "#issue_search_results",
+    "involves.png",
+    async (targetElement) => {
+      absoluteTime && (await _convertToAbsoluteTime(targetElement));
+      await _hidePagination(targetElement);
     }
-
-    const elementToHide = await targetElement.$(".paginate-container");
-    if (elementToHide) {
-      await elementToHide.evaluate((el) => (el.style.display = "none"));
-    }
-    await targetElement.screenshot({ path: "involves.png" });
-  } finally {
-    await browser.close();
-  }
+  );
 };
 
 /**
@@ -111,6 +69,31 @@ export const openGraph = async (user, repo) => {
   await _downloadOpenGraph(`https://github.com/${user}/${repo}`, "open-graph.png");
 };
 
+const _convertToAbsoluteTime = async (targetElement) => {
+  const relativeTimes = await targetElement.$$("relative-time");
+  await Promise.all(
+    relativeTimes.map(async (relativeTime) => {
+      const dateTime = await relativeTime.evaluate((el) =>
+        el.getAttribute("datetime")
+      );
+      const date = new Date(dateTime);
+      const day = date.getDate();
+      const month = date.toLocaleString("en-us", { month: "short" });
+      const year = date.getFullYear();
+      await relativeTime.evaluate(
+        (el, date) =>
+          el.replaceWith(
+            Object.assign(document.createElement("span"), {
+              innerText: `on ${date.day} ${date.month} ${date.year}`,
+              class: "no-wrap",
+            })
+          ),
+        { day, month, year }
+      );
+    })
+  );
+};
+
 const _downloadOpenGraph = async (pageUrl, filename) => {
   const dom = await JSDOM.fromURL(pageUrl);
   const node = dom.window.document.querySelector('meta[property="og:image"]');
@@ -118,6 +101,20 @@ const _downloadOpenGraph = async (pageUrl, filename) => {
   https.get(url, (res) => {
     res.pipe(fs.createWriteStream(filename));
   });
+};
+
+const _help = () => {
+  console.log(AVATAR_USAGE);
+  console.log(CONTRIBUTION_GRAPH_USAGE);
+  console.log(HELP_USAGE);
+  console.log(INVOLVES_USAGE);
+  console.log(OPEN_GRAPH_USAGE);
+};
+
+const _hidePagination = async (targetElement) => {
+  const elementToHide = await targetElement.$(".paginate-container");
+  elementToHide &&
+    (await elementToHide.evaluate((el) => (el.style.display = "none")));
 };
 
 const _parseContributionGraphArgs = (args) => {
@@ -141,73 +138,58 @@ const _parseInvolvesArgs = (args) => {
   return { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime };
 };
 
-const args = process.argv.slice(2);
-const command = args.shift();
+const _screenshot = async (url, selector, filename, additionalScripts) => {
+  const browser = await chromium.launch({ channel: "chrome" });
+  await _try(async () => {
+    const context = await browser.newContext({ deviceScaleFactor: 2 }); // 高 DPI
+    const page = await context.newPage();
+    page.setDefaultTimeout(0);
+    await page.goto(url);
+    await page.waitForSelector(selector);
+    const targetElement = await page.$(selector);
+    additionalScripts && (await additionalScripts(targetElement));
+    await targetElement.screenshot({ path: filename });
+  });
+  await browser.close();
+};
 
-const subcommand = {
-  avatar: (args) => {
-    const [user] = args;
-    if (user) {
-      (async () => {
-        await avatar(user);
-      })();
-    } else {
-      console.log(AVATAR_USAGE);
-    }
-  },
-  "contribution-graph": (args) => {
-    const { user, hasYear, year } = _parseContributionGraphArgs(args);
-    if (user && (!hasYear || year)) {
-      (async () => {
-        await contributionGraph(user, year);
-      })();
-    } else {
-      console.log(CONTRIBUTION_GRAPH_USAGE);
-    }
-  },
-  help: () => {
-    console.log(AVATAR_USAGE);
-    console.log(CONTRIBUTION_GRAPH_USAGE);
-    console.log(HELP_USAGE);
-    console.log(INVOLVES_USAGE);
-    console.log(OPEN_GRAPH_USAGE);
-  },
-  involves: (args) => {
-    const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
-      _parseInvolvesArgs(args);
-    if (
-      user &&
-      (!hasExcludeUser ||
+const _try = async (func) => {
+  try {
+    await func();
+  } catch (e) {}
+};
+
+const [subcommandName, ...args] = process.argv.slice(2);
+const subcommand =
+  {
+    avatar: async ([user]) => {
+      user ? await avatar(user) : console.log(AVATAR_USAGE);
+    },
+    "contribution-graph": async (args) => {
+      const { user, hasYear, year } = _parseContributionGraphArgs(args);
+      user && (!hasYear || year)
+        ? await contributionGraph(user)
+        : console.log(CONTRIBUTION_GRAPH_USAGE);
+    },
+    involves: async (args) => {
+      const { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime } =
+        _parseInvolvesArgs(args);
+      const isValidExcludeUser =
+        !hasExcludeUser ||
         (excludeUser &&
           excludeUser != "--absolute-time" &&
-          excludeUser != "--sort")) &&
-      (!hasSort ||
-        (sort && sort != "--absolute-time" && sort != "--exclude-user"))
-    ) {
-      (async () => {
-        await involves(user, absoluteTime, excludeUser, sort);
-      })();
-    } else {
-      console.log(INVOLVES_USAGE);
-    }
-  },
-  "open-graph": (args) => {
-    const [user, repo] = args;
-    if (user && repo) {
-      (async () => {
-        await openGraph(user, repo);
-      })();
-    } else {
-      console.log(OPEN_GRAPH_USAGE);
-    }
-  },
-}[command];
-subcommand
-  ? subcommand(args)
-  : (() => {
-      console.log(AVATAR_USAGE);
-      console.log(CONTRIBUTION_GRAPH_USAGE);
-      console.log(HELP_USAGE);
-      console.log(INVOLVES_USAGE);
-      console.log(OPEN_GRAPH_USAGE);
-    })();
+          excludeUser != "--sort");
+      const isValidSort =
+        !hasSort ||
+        (sort && sort != "--absolute-time" && sort != "--exclude-user");
+      user && isValidExcludeUser && isValidSort
+        ? await involves(user, absoluteTime, excludeUser, sort)
+        : console.log(INVOLVES_USAGE);
+    },
+    "open-graph": async ([user, repo]) => {
+      user && repo
+        ? await openGraph(user, repo)
+        : console.log(OPEN_GRAPH_USAGE);
+    },
+  }[subcommandName] ?? _help();
+subcommand(args);
