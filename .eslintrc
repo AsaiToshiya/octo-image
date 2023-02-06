@@ -1,0 +1,10 @@
+{
+  "env": {
+    "es2020": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": ["functional"],
+  "extends": ["plugin:functional/lite"]
+}

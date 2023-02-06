@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "documentation readme index.js --section=API --markdown-toc false && documentation readme index.js --section=API --markdown-toc false --readme-file README-en.md"
+    "docs": "documentation readme index.js --section=API --markdown-toc false && documentation readme index.js --section=API --markdown-toc false --readme-file README-en.md",
+    "lint": "eslint index.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,8 @@
     "playwright-core": "^1.22.2"
   },
   "devDependencies": {
-    "documentation": "^14.0.1"
+    "documentation": "^14.0.1",
+    "eslint": "^8.33.0",
+    "eslint-plugin-functional": "^5.0.4"
   }
 }
