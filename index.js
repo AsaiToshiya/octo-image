@@ -114,12 +114,14 @@ const _help = () => {
 const _hidePagination = async (targetElement) => {
   const elementToHide = await targetElement.$(".paginate-container");
   elementToHide &&
-    (await elementToHide.evaluate((el) => (el.style.display = "none")));
+    (await elementToHide.evaluate((el) =>
+      el.style.setProperty("display", "none")
+    ));
 };
 
 const _parseContributionGraphArgs = (args) => {
-  const newArgs = [...args];
-  const user = newArgs.pop();
+  const newArgs = args.slice(0, args.length - 1);
+  const user = args[args.length - 1];
   const yearIndex = newArgs.indexOf("--year");
   const hasYear = yearIndex > -1;
   const year = hasYear ? newArgs[yearIndex + 1] : null;
@@ -127,14 +129,15 @@ const _parseContributionGraphArgs = (args) => {
 };
 
 const _parseInvolvesArgs = (args) => {
-  const user = args.pop();
-  const absoluteTime = args.includes("--absolute-time");
-  const excludeUserIndex = args.indexOf("--exclude-user");
+  const user = args[args.length - 1];
+  const newArgs = args.slice(0, args.length - 1);
+  const absoluteTime = newArgs.includes("--absolute-time");
+  const excludeUserIndex = newArgs.indexOf("--exclude-user");
   const hasExcludeUser = excludeUserIndex > -1;
-  const excludeUser = hasExcludeUser ? args[excludeUserIndex + 1] : null;
-  const sortIndex = args.indexOf("--sort");
+  const excludeUser = hasExcludeUser ? newArgs[excludeUserIndex + 1] : null;
+  const sortIndex = newArgs.indexOf("--sort");
   const hasSort = sortIndex > -1;
-  const sort = hasSort ? args[sortIndex + 1] : null;
+  const sort = hasSort ? newArgs[sortIndex + 1] : null;
   return { user, hasExcludeUser, excludeUser, hasSort, sort, absoluteTime };
 };
 
