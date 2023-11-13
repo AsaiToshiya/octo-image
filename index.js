@@ -32,7 +32,7 @@ export const contributionGraph = async (user, year) => {
   await _screenshot(
     `https://github.com/${user}` +
       (year ? `?tab=overview&from=${year}-01-01&to=${year}-12-31` : ""),
-    ".js-calendar-graph-svg",
+    ".js-calendar-graph div",
     "contribution-graph.png"
   );
 };
