@@ -9,8 +9,8 @@ dependencies:
     specifier: ^24.0.0
     version: 24.0.0
   playwright-core:
-    specifier: 1.41.1
-    version: 1.41.1
+    specifier: 1.42.0
+    version: 1.42.0
 
 devDependencies:
   documentation:
@@ -2376,8 +2376,8 @@ packages:
     engines: {node: '>=14.16'}
     dev: true
 
-  /playwright-core@1.41.1:
-    resolution: {integrity: sha512-/KPO5DzXSMlxSX77wy+HihKGOunh3hqndhqeo/nMxfigiKzogn8kfL0ZBDu0L1RKgan5XHCPmn6zXd2NUJgjhg==}
+  /playwright-core@1.42.0:
+    resolution: {integrity: sha512-0HD9y8qEVlcbsAjdpBaFjmaTHf+1FeIddy8VJLeiqwhcNqGCBe4Wp2e8knpqiYbzxtxarxiXyNDw2cG8sCaNMQ==}
     engines: {node: '>=16'}
     hasBin: true
     dev: false
