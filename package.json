@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "jsdom": "^24.0.0",
-    "playwright-core": "1.44.1"
+    "playwright-core": "1.45.0"
   },
   "devDependencies": {
     "documentation": "^14.0.1",
