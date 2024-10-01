@@ -12,8 +12,8 @@ importers:
         specifier: ^25.0.0
         version: 25.0.0
       playwright-core:
-        specifier: 1.46.1
-        version: 1.46.1
+        specifier: 1.47.2
+        version: 1.47.2
     devDependencies:
       documentation:
         specifier: ^14.0.1
@@ -1199,8 +1199,8 @@ packages:
     resolution: {integrity: sha512-KocF8ve28eFjjuBKKGvzOBGzG8ew2OqOOSxTTZhirkzH7h3BI1vyzqlR0qbfcDBve1Yzo3FVlWUAtCRrbVN8Fw==}
     engines: {node: '>=14.16'}
 
-  playwright-core@1.46.1:
-    resolution: {integrity: sha512-h9LqIQaAv+CYvWzsZ+h3RsrqCStkBHlgo6/TJlFst3cOTlLghBQlJwPOZKQJTKNaD3QIB7aAVQ+gfWbN3NXB7A==}
+  playwright-core@1.47.2:
+    resolution: {integrity: sha512-3JvMfF+9LJfe16l7AbSmU555PaTl2tPyQsVInqm3id16pdDfvZ8TTZ/pyzmkbDrZTQefyzU7AIHlZqQnxpqHVQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -3108,7 +3108,7 @@ snapshots:
 
   pify@6.1.0: {}
 
-  playwright-core@1.46.1: {}
+  playwright-core@1.47.2: {}
 
   postcss@8.4.31:
     dependencies:
